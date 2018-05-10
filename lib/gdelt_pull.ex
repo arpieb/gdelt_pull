@@ -7,6 +7,10 @@ defmodule GDELTPull do
   @url_lastupdate_en "http://data.gdeltproject.org/gdeltv2/lastupdate.txt"
   @url_lastupdate_translation "http://data.gdeltproject.org/gdeltv2/lastupdate-translation.txt"
 
+  ########################################
+  # Public API
+  ########################################
+
   @doc ~S"""
   Retrieve the GDELT 2.0 master download list from the data service
   """
@@ -37,6 +41,10 @@ defmodule GDELTPull do
     HTTPoison.get(url) |> process_download_list()
   end
 
+  ########################################
+  # Private functions
+  ########################################
+  
   defp process_download_list({:ok, %HTTPoison.Response{body: body}}) do
     body
     |> String.split("\n")
@@ -50,15 +58,24 @@ defmodule GDELTPull do
   defp parse_to_map(line) do
     rex = ~R/(?<size>\d+)\s+(?<hash>[0-9a-f]+)\s+(?<url>(?:http|https):\/\/(?:[^\/]+\/)*(?<filename>.*(?<type>export|mentions|gkg).*))/
     Regex.named_captures(rex, line)
-    |> update_captures()
+    |> keys_to_atoms()
+    |> convert_values()
   end
 
-  defp update_captures(:nil), do: nil
-  defp update_captures(captures) do
+  # Convert map keys from strings to atoms
+  defp keys_to_atoms(:nil), do: :nil
+  defp keys_to_atoms(captures) do
     for {key, val} <- captures, into: %{} do
       {String.to_atom(key), val}
     end
-    #Map.put(captures, :type, String.to_atom(captures[:type]))
+  end
+
+  # Convert string values into correct types
+  defp convert_values(:nil), do: :nil
+  defp convert_values(captures) do
+    captures
+    |> Map.put(:type, String.to_atom(captures[:type]))
+    |> Map.put(:size, String.to_integer(captures[:size]))
   end
 
 end
