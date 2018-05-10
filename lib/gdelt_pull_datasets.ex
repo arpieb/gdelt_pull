@@ -57,11 +57,16 @@ defmodule GDELTPull.Datasets do
   @doc ~S"""
   Download a batch of GDELT 2.0 data files
   """
-  @spec download_files(records::map, dest::binary) :: {:ok} | {:error, term}
-  def download_files([], _dest), do: []
-  def download_files(records, dest) do
+  @spec download_files(records::map, dest::binary, options::list) :: {:ok} | {:error, term}
+  def download_files(records, dest), do: download_files(records, dest, [])
+  def download_files([], _dest, _options), do: []
+  def download_files(records, dest, options) do
     record = hd(records)
-    [{record[:url], download_file(record, dest)} | download_files(tl(records), dest)]
+    url = record[:url]
+    if Enum.member?(options, :verbose) do
+      IO.puts("Downloading #{url}")
+    end
+    [{url, download_file(record, dest)} | download_files(tl(records), dest, options)]
   end
 
   ########################################
