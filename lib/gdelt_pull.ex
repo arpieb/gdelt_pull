@@ -44,12 +44,17 @@ defmodule GDELTPull do
   ########################################
   # Private functions
   ########################################
-  
+
   defp process_download_list({:ok, %HTTPoison.Response{body: body}}) do
-    body
-    |> String.split("\n")
+    # Save to temp file
+    list_filename = System.tmp_dir() |> Path.join("download_list.txt")
+    File.write(list_filename, body)
+
+    # Process lines in file as a stream
+    File.stream!(list_filename)
     |> Enum.map(&parse_to_map/1)
     |> Enum.reject(&is_nil/1)
+    |> Enum.to_list()
   end
   defp process_download_list(error), do: error
 
