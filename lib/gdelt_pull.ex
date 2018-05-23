@@ -23,8 +23,12 @@ defmodule GDELTPull do
   defp process_args([dest: dest]) do
     case File.dir?(dest) do
       :true ->
-        # get_masterfile_list(:en)
-        get_lastupdate_list(:en)
+        # get_lastupdate_list(:en)
+        get_masterfile_list(:en)
+        |> Enum.reject(fn(x) -> x[:type] == :gkg end)
+        |> download_files(dest, [:verbose])
+
+        get_masterfile_list(:translation)
         |> Enum.reject(fn(x) -> x[:type] == :gkg end)
         |> download_files(dest, [:verbose])
       _ -> IO.puts("#{dest} is not a directory")
