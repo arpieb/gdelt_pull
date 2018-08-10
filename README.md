@@ -1,27 +1,9 @@
-# GDELTPull
+# GDELT Pull
 
-**TODO: Add description**
+This is a command-line utility written in [Elixir](https://elixir-lang.org/) to pull [GDELT](https://www.gdeltproject.org/) v2.0 datafiles.  YMMV as this is not intended to be a supported project, and was develped for personal research.
 
 ## Build
 
 ```bash
 mix escript.build
 ```
-
-## Installation
-
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `gdelt_pull` to your list of dependencies in `mix.exs`:
-
-```elixir
-def deps do
-  [
-    {:gdelt_pull, "~> 0.1.0"}
-  ]
-end
-```
-
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/gdelt_pull](https://hexdocs.pm/gdelt_pull).
-
